@@ -1,0 +1,7 @@
+conf/*
+!/conf/*.example
+
+logs/*
+!/logs/.gitkeep
+
+docker-compose.override.yml

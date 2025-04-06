@@ -1,0 +1,12 @@
+---
+services:
+  unbound:
+    build: .
+    container_name: unbound
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    volumes:
+      - ./conf:/etc/unbound:ro
+      - ./logs:/var/log/unbound:rw
+    restart: unless-stopped
