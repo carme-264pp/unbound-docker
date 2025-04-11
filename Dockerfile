@@ -22,28 +22,19 @@ RUN wget https://nlnetlabs.nl/downloads/unbound/unbound-${UNBOUND_VERSION}.tar.g
     cd unbound-${UNBOUND_VERSION} && \
     ./configure --prefix=/opt/unbound --disable-flto \
     --with-run-dir=/opt/unbound/ \
-    --with-pidfile=/run/unbound.pid && \
-    make -j 4 && make install
+    --with-pidfile=/opt/unbound/unbound.pid && \
+    make -j 4 && make install && \
+    touch /opt/unbound/unbound.pid
 
 # build unbound image
-FROM debian:bookworm-slim
+FROM gcr.io/distroless/base-debian12:nonroot
 
-COPY --from=builder /opt/unbound /opt/unbound
+USER nonroot:nonroot
 
-RUN \
-    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-    --mount=type=cache,target=/var/cache/apt/archives,sharing=locked \
-    apt-get update && apt-get install -y \
-    libssl3 libevent-dev libexpat1 && \
-    groupadd -g 1000 unbound && \
-    useradd -u 1000 -g unbound unbound && \
-    touch /run/unbound.pid && \
-    chown unbound:unbound /run/unbound.pid && \
-    chown -R unbound:unbound /opt/unbound
+COPY --from=builder --chown=nonroot:nonroot /opt/unbound /opt/unbound
 
-USER unbound:unbound
 WORKDIR /opt/unbound/
-VOLUME ["/etc/unbound/", "/var/log/unbound/"]
+VOLUME ["/etc/unbound/"]
 
 ENV PATH="/opt/unbound/sbin:${PATH}" \
     TZ="Asia/Tokyo" 
