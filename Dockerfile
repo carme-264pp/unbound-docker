@@ -62,13 +62,12 @@ RUN \
     ca-certificates \
     libexpat1 \
     zlib1g \
-    libevent-2.1-7
+    libevent-2.1-7 \
+    tzdata
+
+COPY --from=builder /opt/ /opt/
 
 USER ubuntu:ubuntu
-
-COPY --from=builder /opt/openssl /opt/openssl
-COPY --from=builder --chown=ubuntu:ubuntu /opt/unbound /opt/unbound
-
 WORKDIR /opt/unbound/
 VOLUME ["/etc/unbound/"]
 
