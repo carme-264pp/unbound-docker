@@ -46,6 +46,8 @@ RUN \
     --with-ssl=/opt/openssl \
     --with-libevent \
     --disable-flto \
+    --with-username=ubuntu \
+    --with-chroot-dir=/opt/unbound \
     --with-pidfile=/opt/unbound/unbound.pid && \
     make -j 4 && make install && \
     touch /opt/unbound/unbound.pid
@@ -62,11 +64,10 @@ RUN \
     zlib1g \
     libevent-2.1-7
 
-RUN groupadd -r -g 1001 unbound && useradd -r -u 1001 -g unbound -d /opt/unbound unbound
-USER unbound:unbound
+USER ubuntu:ubuntu
 
 COPY --from=builder /opt/openssl /opt/openssl
-COPY --from=builder --chown=unbound:unbound /opt/unbound /opt/unbound
+COPY --from=builder --chown=ubuntu:ubuntu /opt/unbound /opt/unbound
 
 WORKDIR /opt/unbound/
 VOLUME ["/etc/unbound/"]
