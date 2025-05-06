@@ -78,3 +78,9 @@ ENV PATH="/opt/unbound/sbin:${PATH}" \
 EXPOSE 53/udp 53/tcp
 
 ENTRYPOINT ["unbound", "-d", "-c", "/etc/unbound/unbound.conf"]
+
+LABEL org.opencontainers.image.version="v1.23.0" \
+    org.opencontainers.image.revision="20250506-01" \
+    org.opencontainers.image.source=https://github.com/carme-264pp/unbound-docker \
+    org.opencontainers.image.description="unbound-docker" \
+    org.opencontainers.image.licenses=MIT

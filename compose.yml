@@ -1,8 +1,12 @@
 ---
 services:
   unbound:
-    build: .
-    container_name: unbound
+    build:
+      context: .
+      platforms:
+        - "linux/arm64"
+        - "linux/amd64"
+    image: ghcr.io/carme-264pp/unbound-docker:latest
     ports:
       - "53:53/udp"
       - "53:53/tcp"
