@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 # Build unbound image
-FROM ubuntu:noble-20250404 AS builder
+FROM ubuntu:noble-20250415.1 AS builder
 
-ENV UNBOUND_VERSION=1.22.0
-ENV UNBOUND_SRC_SHA256=c5dd1bdef5d5685b2cedb749158dd152c52d44f65529a34ac15cd88d4b1b3d43
+ENV UNBOUND_VERSION=1.23.0
+ENV UNBOUND_SRC_SHA256=959bd5f3875316d7b3f67ee237a56de5565f5b35fc9b5fc3cea6cfe735a03bb8
 
 ENV OPENSSL_VERSION=3.5.0
 ENV OPENSSL_SRC_SHA256=344d0a79f1a9b08029b0744e2cc401a43f9c90acd1044d09a530b4885a8e9fc0
@@ -53,7 +53,7 @@ RUN \
     touch /opt/unbound/unbound.pid
 
 # build unbound image
-FROM ubuntu:noble-20250404
+FROM ubuntu:noble-20250415.1
 
 RUN \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
