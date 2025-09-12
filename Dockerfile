@@ -1,12 +1,13 @@
 # syntax=docker/dockerfile:1
 # Build unbound image
-FROM ubuntu:noble-20250415.1 AS builder
+ARG BASE_IMAGE=ubuntu:noble
 
-ENV UNBOUND_VERSION=1.23.0
-ENV UNBOUND_SRC_SHA256=959bd5f3875316d7b3f67ee237a56de5565f5b35fc9b5fc3cea6cfe735a03bb8
+FROM ${BASE_IMAGE} AS builder
 
-ENV OPENSSL_VERSION=3.5.0
-ENV OPENSSL_SRC_SHA256=344d0a79f1a9b08029b0744e2cc401a43f9c90acd1044d09a530b4885a8e9fc0
+ARG UNBOUND_VERSION
+ARG UNBOUND_SRC_SHA256
+ARG OPENSSL_VERSION
+ARG OPENSSL_SRC_SHA256
 
 RUN \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -53,7 +54,11 @@ RUN \
     touch /opt/unbound/unbound.pid
 
 # build unbound image
-FROM ubuntu:noble-20250415.1
+FROM ${BASE_IMAGE}
+
+ARG UNBOUND_VERSION
+ARG IMAGE_REVISION
+ARG TZ
 
 RUN \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -73,14 +78,14 @@ VOLUME ["/etc/unbound/"]
 
 ENV PATH="/opt/unbound/sbin:${PATH}" \
     LD_LIBRARY_PATH=/opt/openssl/lib64 \
-    TZ="Asia/Tokyo" 
+    TZ=${TZ}
 
 EXPOSE 53/udp 53/tcp
 
 ENTRYPOINT ["unbound", "-d", "-c", "/etc/unbound/unbound.conf"]
 
-LABEL org.opencontainers.image.version="v1.23.0" \
-    org.opencontainers.image.revision="20250506-01" \
+LABEL org.opencontainers.image.version="v${UNBOUND_VERSION}-${IMAGE_REVISION}" \
+    org.opencontainers.image.revision="${IMAGE_REVISION}" \
     org.opencontainers.image.source=https://github.com/carme-264pp/unbound-docker \
     org.opencontainers.image.description="unbound-docker" \
     org.opencontainers.image.licenses=MIT
