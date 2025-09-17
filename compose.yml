@@ -12,8 +12,6 @@ services:
         BASE_IMAGE: ${BASE_IMAGE}
         TZ: ${TZ}
       tags:
-        - "${UNBOUND_TAG_NAME}:latest"
-        - "${UNBOUND_TAG_NAME}:v${UNBOUND_VERSION}-${IMAGE_REVISION}"
         - "ghcr.io/carme-264pp/${UNBOUND_TAG_NAME}:latest"
         - "ghcr.io/carme-264pp/${UNBOUND_TAG_NAME}:v${UNBOUND_VERSION}-${IMAGE_REVISION}"
     image: ghcr.io/carme-264pp/${UNBOUND_TAG_NAME}:latest
