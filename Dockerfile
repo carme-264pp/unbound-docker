@@ -34,7 +34,7 @@ RUN \
     --with-run-dir=/opt/unbound \
     --with-libevent \
     --disable-flto \
-    --with-username=ubuntu \
+    --with-username=unbound \
     --with-chroot-dir=/opt/unbound \
     --with-pidfile=/opt/unbound/unbound.pid && \
     make -j 4 && make install && \
