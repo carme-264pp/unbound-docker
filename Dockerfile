@@ -6,8 +6,6 @@ FROM ${BASE_IMAGE} AS builder
 
 ARG UNBOUND_VERSION
 ARG UNBOUND_SRC_SHA256
-ARG OPENSSL_VERSION
-ARG OPENSSL_SRC_SHA256
 
 RUN \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -16,7 +14,7 @@ RUN \
     build-essential \
     libexpat1-dev \
     libevent-dev \
-    zlib1g-dev \
+    libssl-dev \
     ca-certificates \
     wget \
     git
@@ -25,18 +23,8 @@ WORKDIR /build
 
 RUN \
     --mount=type=cache,target=/build/src \
-    wget -P /build/src https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz && \
-    echo "${OPENSSL_SRC_SHA256}  /build/src/openssl-${OPENSSL_VERSION}.tar.gz" | sha256sum -c - && \
     wget -P /build/src https://nlnetlabs.nl/downloads/unbound/unbound-${UNBOUND_VERSION}.tar.gz && \
     echo "${UNBOUND_SRC_SHA256}  /build/src/unbound-${UNBOUND_VERSION}.tar.gz" | sha256sum -c
-
-RUN \
-    --mount=type=cache,target=/build/src \
-    tar xzf src/openssl-${OPENSSL_VERSION}.tar.gz && \
-    cd openssl-${OPENSSL_VERSION} && \
-    ./Configure --prefix=/opt/openssl --openssldir=/opt/openssl \
-    no-docs no-apps zlib && \
-    make -j 4 && make install_sw
 
 RUN \
     --mount=type=cache,target=/build/src \
@@ -44,7 +32,6 @@ RUN \
     cd unbound-${UNBOUND_VERSION} && \
     ./configure --prefix=/opt/unbound \
     --with-run-dir=/opt/unbound \
-    --with-ssl=/opt/openssl \
     --with-libevent \
     --disable-flto \
     --with-username=ubuntu \
@@ -76,7 +63,6 @@ COPY --from=builder --chown=unbound:unbound /opt/ /opt/
 WORKDIR /opt/unbound/
 
 ENV PATH="/opt/unbound/sbin:${PATH}" \
-    LD_LIBRARY_PATH=/opt/openssl/lib64 \
     TZ=${TZ}
 
 EXPOSE 53/udp 53/tcp
