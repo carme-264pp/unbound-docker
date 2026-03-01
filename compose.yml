@@ -13,6 +13,8 @@ services:
         - "ghcr.io/carme-264pp/${UNBOUND_TAG_NAME}:latest"
         - "ghcr.io/carme-264pp/${UNBOUND_TAG_NAME}:v${UNBOUND_VERSION}-${IMAGE_REVISION}"
     image: ghcr.io/carme-264pp/${UNBOUND_TAG_NAME}:latest
+    networks:
+      - unbound_net
     ports:
       - "53:53/udp"
       - "53:53/tcp"
@@ -24,3 +26,6 @@ services:
       options:
         max-size: "20m"
         max-file: "5"
+
+networks:
+  unbound_net:
