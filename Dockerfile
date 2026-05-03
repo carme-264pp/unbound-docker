@@ -58,15 +58,16 @@ RUN \
     tzdata
 
 USER unbound:unbound
+ENV TZ=${TZ}
+
 COPY --from=builder --chown=unbound:unbound /opt/ /opt/
 WORKDIR /opt/unbound/
-
-ENV PATH="/opt/unbound/sbin:${PATH}" \
-    TZ=${TZ}
+VOLUME ["/etc/unbound"]
 
 EXPOSE 53/udp 53/tcp
 
-ENTRYPOINT ["unbound", "-d", "-c", "/etc/unbound/unbound.conf"]
+ENTRYPOINT ["/opt/unbound/sbin/unbound"]
+CMD ["-d", "-c", "/etc/unbound/unbound.conf"]
 
 LABEL org.opencontainers.image.version="v${UNBOUND_VERSION}-${IMAGE_REVISION}" \
     org.opencontainers.image.revision="${IMAGE_REVISION}" \
