@@ -33,12 +33,11 @@ RUN \
     ./configure --prefix=/opt/unbound \
     --with-run-dir=/opt/unbound \
     --with-libevent \
+    --enable-tfo-client \
+    --enable-tfo-server \
     --disable-flto \
-    --with-username=unbound \
-    --with-chroot-dir=/opt/unbound \
     --with-pidfile=/opt/unbound/unbound.pid && \
-    make -j 4 && make install && \
-    touch /opt/unbound/unbound.pid
+    make -j 4 && make install
 
 # build unbound image
 FROM ${BASE_IMAGE}
