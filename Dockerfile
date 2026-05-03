@@ -10,7 +10,7 @@ ARG UNBOUND_SRC_SHA256
 RUN \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=cache,target=/var/cache/apt/archives,sharing=locked \
-    apt update && apt install -y --no-install-recommends \
+    apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libexpat1-dev \
     libevent-dev \
@@ -50,7 +50,7 @@ RUN \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=cache,target=/var/cache/apt/archives,sharing=locked \
     groupadd -r unbound -g 1001 && useradd -u 1001 -d /opt/unbound/ -g unbound unbound && \
-    apt update && apt install -y --no-install-recommends \
+    apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libexpat1 \
     zlib1g \
